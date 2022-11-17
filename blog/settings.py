@@ -99,7 +99,13 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 # }
 
 import dj_database_url
-DATABASES = {'default': dj_database_url.config(default=env('DATABASE_URL'), engine='django_cockroachdb')}
+DATABASES = {
+    'default': dj_database_url.config(
+        default=env('DATABASE_URL'),
+        engine='django_cockroachdb',
+        ssl_require=False
+        )
+    }
 # DATABASES = {
 #     'default': {
 #         'ENGINE': env("DB_ENGINE"),
