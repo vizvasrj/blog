@@ -2,6 +2,8 @@ asgiref
 asttokens
 backcall
 beautifulsoup4
+boto3
+botocore
 bs4
 certifi
 charset-normalizer
@@ -13,6 +15,7 @@ django-cockroachdb
 django-environ
 django-extensions
 django-restframework
+django-storages
 djangorestframework
 djangorestframework-simplejwt
 easy-thumbnails
@@ -21,6 +24,7 @@ gunicorn
 idna
 ipython
 jedi
+jmespath
 lxml
 matplotlib-inline
 parso
@@ -33,8 +37,10 @@ ptyprocess
 pure-eval
 Pygments
 PyJWT
+python-dateutil
 pytz
 requests
+s3transfer
 shortuuid
 six
 soupsieve
