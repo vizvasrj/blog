@@ -1,7 +1,7 @@
 Installation process
 
 ```bash
-git clone github.com/vizvasrj/blog
+git clone https://github.com/vizvasrj/blog
 ```
 
 ```bash
