@@ -1,0 +1,87 @@
+{% load posts_tags %}
+{% load thumbnail %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{{user.profiles.all}}
+{% for post in posts %}
+
+<div class="row bg-mint-lite p-2 " style="box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;">
+  <div class="col-1 left-col-1">
+    <div class="blog__list__float">
+      
+        
+    </div>
+
+  </div>
+  <div class="col-11 left-col-11">
+
+    <div class="">
+      <div class="">
+        <a class="textnone" href="{{post.get_absolute_url}}">
+          <h3 id="title{{post.id}}" class="" style="font-family: Noto Sans; font-weight: 800;">
+            {{post.title}}
+    
+          </h3>
+          <div class="date">
+            
+          </div>
+          </a>
+      </div>
+      <hr class="hr-post-list">
+      <div id="userdata_1" data-id="{{post.author.id}}-{{post.id}}" class="author-up">
+        {% thumbnail post.author.profiles.photo "42x42" crop="100%" as im %}
+        <a id="usernameid" data-action="list" data-id="{{post.author.id}}-{{post.id}}" class="a_author_image" href="{{post.author.get_absolute_url}}">
+          <img class="author__left__side" src="{{ im.url }}" alt="">
+        </a>
+
+        <a class="author_name_from_list vizvasrj" href="{{post.author.get_absolute_url}}">{{ post.author }}</a>
+        <div class="userdrop" id="authorabout{{post.author.id}}-{{post.id}}">
+          <!-- Null -->
+        </div>
+
+      </div>
+      <div class="date_on_list">
+        {{ post.updated }}
+      </div>
+      
+      
+      {% if post.cover %}
+        
+        {% if post.cover.height < 883 %}
+        {% thumbnail post.cover "1000x500" crop="10%" as im %}
+        {% else %}
+          {% thumbnail post.cover "883x241" crop="100%" as im %}
+        {% endif %}
+        <a  href="{{post.get_absolute_url}}"><img id="cover{{post.id}}" width="200px" class=" post-image" src="{{im.url}}" alt="" /></a>
+      {% endif %}
+        
+      <div class="post__list__body" style="font-family: Noto Sans;">
+        {{ post.body|xssprotect|removeimage|customestrip }}
+    </div>
+      <a class="link0" href="{{post.get_absolute_url}}">
+        <div class="read_more">{% trans 'Read more' %} : </div> 
+      </a>
+      
+        
+    </div>
+
+
+
+
+  </div>
+</div>
+<!-- <hr style="border: 2px solid grey;"> -->
+<div style="height: 20px;" class="">
+
+</div>
+{% endfor %}
+
+{% block style %}	
+<style>
+      a > img {
+        max-width: 100%;
+        width: fit-content;
+    }
+
+</style>
+{% endblock %}

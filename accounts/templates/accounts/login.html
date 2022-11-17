@@ -1,0 +1,191 @@
+{% extends 'blog_base.html' %}
+{# load crispy_forms_tags #}
+{% load i18n %}
+{% block title %} Login {% endblock %}
+
+{% block menu %}		{% endblock %}
+
+{% block style %}
+<style>
+
+    .myfieldclass2 {
+        width: 100%;
+        border-style: solid;
+        border-radius: 7px;
+        padding: 5px;
+        background: var(--my-bg-color);
+        color: var(--my-text-color);
+        border: 2px solid grey;
+    }
+    .myfieldclass2:hover {
+        color: inherit;
+        border: 2px solid grey;
+    }
+    .myfieldclass2:focus {
+        outline: none;
+        border: 2px solid grey;
+    } 
+    .login_nav {
+        text-decoration: underline;
+        background: #45662350;
+        border: 1px solid #23346650;
+    }
+    .signup_nav {
+        text-decoration: underline;
+        background: antiquewhite;
+        border: 1px solid #22333350;
+    }
+    #message {
+        font-size: 13px;
+        color: gray;
+        text-decoration: underline 3px blueviolet;
+        padding-left: 5px;
+        padding-right: 5px;
+        max-width: 300px;
+        padding-bottom: 10px;
+    }
+
+    .google-signin {
+        display: inline-block;
+        border: 1px solid gray;
+        border-radius: 7px;
+        padding: 5px;
+        cursor: pointer;
+    }
+    #google_svg {
+        font-size: 32px
+    }
+    #google_svg > path {
+        fill: unset;
+    }
+    .googlename {
+        display: inline;
+        vertical-align: sub;
+    }
+</style>	
+{% endblock %}
+
+{% block head %}	
+
+    
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    
+    <div class="row">
+        <div class="col-lg-3"></div>
+        <div class="col-lg-6">
+            <div class="login">
+                <h1 class="d-flex justify-content-center">{% trans 'Login' %}</h1>
+                <div class="d-flex mb-5 justify-content-center bs-2 ">
+                    <p>
+                        <form id="myform" class="mt-5" action="" method="POST">
+                        <hr>
+                        <div class="fullname mb-2">
+                            <label class="mt-2 labeltext" for="full_name" class="form-label">{{ form.username.label }}:</label>
+                            <div class="">
+                                {{ form.username }}
+                            </div>
+                        </div>
+                        <div class="fullname mb-2">
+                            <label class="mt-2 labeltext" for="full_name" class="form-label">{{ form.password.label }}:</label>
+                            <div class="">
+                                {{ form.password }}
+                            </div>
+                        </div>
+            
+                        {% csrf_token %}
+                        <div>
+                        {% if message != None %}
+                            <div id="message">{{message}}</div>
+                        {% endif %}
+                        
+                        {% if captcha == True %}
+    
+                        <div data-size="compact" class="g-recaptcha" data-theme="dark" data-callback="gSuccess" data-expired-callback="gExpire" data-sitekey="6Le__RQiAAAAAHMAz7LMyknBuhgi3yoQrNCe9VhP"></div>
+                        <input onclick="onSubmit(event);" class="mybtn" type="submit" value="{% trans 'Login' %}">
+                        {% else %}
+                        <input class="mybtn" type="submit" value="{% trans 'Login' %}">
+
+                        {% endif %}
+
+
+                        {% comment %}
+                            
+                        <a class="textnone td-non forgotp" href="{% url 'forgot_password' %}">{% trans 'have you forgotten your password' %}</a>
+                        {% endcomment %}
+                            
+                        </div>
+                    </form>
+                
+
+                </p>
+            </div>
+            <div class="" style="padding: 30px;">
+
+                <p style="font-size: 12px;">{% trans "If you don't have an account please click here to register." %}</p>
+                <button id="signup" value="" class="mybtn" href="{% url 'register' %}">{% trans 'SignUp' %}</button>
+            </div>
+            </div>
+        </div>
+        <div class="col-lg-3"></div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}	
+<script>
+    $('#signup').on('click', function(e){
+        e.preventDefault()
+        window.location.href =  $('#signup').attr('href')
+    })
+    
+    const params = new URLSearchParams(window.location.search)
+    if (params.has('username')) {
+        $('#id_username').val(params.get('username'))
+    }
+
+
+
+
+// {% if captcha == True %}
+
+var gsuccess = false
+
+function gExpire() {
+    console.log('EXPIRED')
+    gsuccess = false
+}
+function gSuccess() {
+    console.log('Success')
+    gsuccess = true
+}
+
+function onSubmit(e) {
+    e.preventDefault();
+    if (gsuccess == true) {
+        $('#myform').submit()
+
+    }
+    else {
+        console.log('FILL RECAPTCHAr Expire')
+    }
+}
+// {% else %}
+
+// {% endif %}
+
+
+var next = "{{next}}"
+console.log(next)
+
+if (next != "None") {
+    Cookies.set('next', next, { expires: 300 })
+}
+
+</script>
+{% endblock %}
+

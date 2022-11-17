@@ -1,0 +1,44 @@
+{% extends 'blog_base.html' %}
+{% load posts_tags %}
+{% load thumbnail %}
+{% block content %}	
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3"></div>
+        <div class="col-lg-6">
+            <div class="post_block">
+                
+                {% if request.user == post.author %}
+                    <a href="{{post.get_update_url}}">Update</a>
+                {% endif %}
+                    
+                <div class="title" style="font-size: 37px;">{{post.title}}</div>
+                <hr>
+                <div style="font-size: 17px;">{{post.updated}}</div>
+                <hr>
+                {% thumbnail post.cover "600x400" crop="100%" as im %}
+                <img src="{{im.url}}" alt="">
+                <div class="body">
+                    {{post.body|xssprotect}}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block style %}	
+<style>
+    .title {
+        font-weight: 900;
+        font-family: Noto Sans;
+    }
+    .body {
+        /* border-top: 1px solid grey;
+        border-bottom: 1px solid grey; */
+    }
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,16 @@
+{% load posts_tags %}
+{% get_current_language as LANGUAGE_CODE %}
+{{user.profiles.all}}
+{% for post in posts %}
+<div class="category">
+  
+    <div class="name">{{post.name}}</div>
+</div>
+
+{% endfor %}
+
+{% block style %}	
+<style>
+
+</style>
+{% endblock %}

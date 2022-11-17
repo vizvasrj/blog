@@ -1,0 +1,103 @@
+{% extends 'blog_base.html' %}
+{% load static %}
+{% load i18n %}
+{% block content %}	
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3"></div>
+        <div class="col-lg-6">
+            <form method="POST" enctype="multipart/form-data">
+                <p>{{form.title}}</p>
+                <p>{{form.body}}</p>
+                <p id="id_picture">
+                    <div class="">
+                        <label style="padding-bottom: 35px;" class="" for="cover" class="form-label">{% trans 'Upload cover image' %}</label>
+                        <div class="">
+                            <label id="remove" class="" for="id_cover">
+                                <div id="uploadimg" style="padding-bottom: 10px;" class="btn btn-secondary">{% trans 'Upload Image' %}</div>
+                                <img id="myImg" alt="" class="" title="{% trans 'upload new image' %}" width="100%" src='{{imgcover}}' />
+                            </label>
+                            <input style="display: none;" type="file" name="cover" class="btn btn-secondary" accept="image/*" id="id_cover"></input>
+                        </div>
+                    </div>
+                </p>
+                <p>{{form.status}}</p>
+                
+
+                {% csrf_token %}
+                <input class="btn btn-success"  type="submit" value="Submit">
+            </form>
+        </div>
+        <div class="col-lg-3"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}	
+<script src="{% static 'js/ckeditor.js' %}"></script>
+<script src="{% static 'js/ckeditor.config.js' %}"></script>
+
+<script>
+    
+    theEditor.model.document.on('change:data', (evt, data) => {
+        // console.log(theEditor.getData());
+        $('#id_body').val(theEditor.getData())
+    });
+
+    $(function () {
+        $(":file").change(function () {
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = imageIsLoaded;
+                reader.readAsDataURL(this.files[0]);
+                
+            }
+        });
+        function imageIsLoaded(e) {
+            $('#myImg').attr('src', e.target.result); 
+            // $('#remove').remove(); 
+
+        }
+
+    });
+
+    $("#remove").on('click', function(e ){
+        console.log("Clicked")
+    })
+
+// 
+// 
+// 
+
+
+</script>
+
+
+
+{% endblock %}
+
+{% block head %}	
+<link rel="stylesheet" href="{% static 'css/styles.css' %}" type="text/css" charset="utf-8">
+
+{% endblock %}
+
+
+{% block style %}	
+<style>
+        #myImg {
+        max-height: 100%;
+        max-width: 100%;
+        cursor: pointer;
+        padding-top: 17px;
+    }
+    .autocomplete-items div:hover {
+    background-color: #e9e9e9; 
+    }
+
+    /*when navigating through the items using the arrow keys:*/
+    .autocomplete-active {
+    background-color: DodgerBlue !important; 
+    color: #ffffff; 
+    }
+</style>
+{% endblock %}

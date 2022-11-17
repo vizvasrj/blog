@@ -1,0 +1,36 @@
+{% extends 'blog_base.html' %}
+{# load crispy_forms_tags #}
+
+{% block title %} {% trans 'Login' %} {% endblock %}
+
+{% block menu %}	aa	{% endblock %}
+
+{% block content %}
+<div class="login mt-5">
+    <h1 class=" maintitle d-flex justify-content-center">{% trans 'Login Now' %}</h1>
+    <div class="d-flex mb-5 justify-content-center border">
+
+        <div class="login-box">
+            <!-- <h2 class="justify-text-cene">Login</h2> -->
+            <form class="mt-5 roboto" action="" method="POST">
+                <div class="fullname mb-2 border-top">
+                    <label class="mt-2 labeltext" for="id_username" class="form-label">{{ form.username.label }}:</label>
+                    <div class="">
+                        {{ form.username }}
+                    </div>
+                </div>
+                <div class="fullname mb-2 border-top">
+                    <label class="mt-2 labeltext" for="id_password" class="form-label">{{ form.password.label }}:</label>
+                    <div class="">
+                        {{ form.password }}
+                    </div>
+                </div>
+                {% csrf_token %}
+                <p>
+                    <input class="btn btn-success" type="submit" value="{% trans 'Login' %}">
+                    <a class="btn btn-secondary" href="{% url 'register' %}">{% trans 'SignUp' %}</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>{% endblock %}

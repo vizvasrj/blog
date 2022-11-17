@@ -1,0 +1,208 @@
+{% extends 'blog_base.html' %}
+
+{% load i18n %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3"></div>
+        <div class="col-lg-6">
+            <div id="myform">
+                <form method="post">
+                    <div class="passblock">
+                        <div class="label">{% trans 'Enter Current Password' %}</div>
+                        {{form.current_password}}
+                        <div id="messagecp"></div>
+                    </div>
+                    <div class="passblock">
+                        <div class="label">{% trans 'Enter Password' %}</div>
+                        {{form.password1}}
+                        <div id="messagep1"></div>
+                    </div>
+                    <div class="passblock">
+                        <div class="label">{% trans 'Repeat Password' %}</div>
+                        {{form.password2}}
+                        <div id="messagep2"></div>
+                    </div>
+                    <div class="passblock">
+                        <input id="submit_password" type="submit" value="{% trans 'change password' %}">
+                    </div>
+                    {% csrf_token %}
+                </form>
+                <div id="message"></div>
+            </div>
+        </div>
+        <div class="col-lg-3"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block mymyscript %}	
+<script>
+var redirect = false
+function ajaxFunction() {
+    $.post('{% url "change_password_from_login_screen" %}', {
+        csrfmiddlewaretoken: csrftoken,
+        current_password : $('#id_current_password').val(),
+        password1 : $('#id_password1').val(),
+        password2 : $('#id_password2').val()
+    }, function(data) {
+        if (data['status'] == 'ok') {
+            console.log(data['message'])
+            $('#message').text('')
+            $('#message').append(data['message'])
+            $('#message').css('color', 'green')
+            current_password = $('#id_current_password').val('')
+            password1 = $('#id_password1').val('')
+            password2 = $('#id_password2').val('')
+            $('#message').css('background', 'var(--my-bg-color)')
+            $('#message').css('z-index', '10')
+            $('#message').css('position', 'fixed')
+            $('#message').css('padding', '30px')
+            $('#message').css('bottom', '50%')
+            $('#message').css('border', '1px solid')
+            redirect = true
+
+        }
+        else if (data['status'] == 'notok') {
+            $('#message').text('')
+            $('#message').append(data['message'])
+            $('#message').css('color', 'tomato')
+
+        }
+        
+    })
+}
+$('body').on('click', function(e) {
+    if (redirect) {
+            document.location = '{% url "post_list" %}'
+    }
+})
+
+function validateFields() {
+    var returnVal1 = false
+    $('input[type="password"]').each(function(e){
+        $this = $(this)
+        if ($this.val() == '') {
+            returnVal1 = false
+            $this[0].nextElementSibling.textContent = ''
+            $this[0].nextElementSibling.textContent = '{% trans "fill this please" %}'
+        }
+        else {
+            $this[0].nextElementSibling.textContent = ''
+            returnVal1 = true
+        }
+    })
+    return returnVal1
+}
+
+function checkBothIsSame() {
+    var returnVal2 = false
+    password1 = $('#id_password1').val()
+    password2 = $('#id_password2').val()
+    if (password1 != password2) {
+        $('#id_password2')[0].nextElementSibling.textContent = ''
+        $('#id_password2')[0].nextElementSibling.textContent = '{% trans  "Both password are not same" %}'
+    } else {
+        var returnVal2 = true
+    }
+    return returnVal2
+}
+
+function minLength8() {
+    var returnVal3 = false
+    password2 = $('#id_password2').val()
+    if (password2.length <= 7) {
+        $('#id_password2')[0].nextElementSibling.textContent = ''
+        $('#id_password2')[0].nextElementSibling.textContent = '{% trans "Minimum character is 8 digit" %}'
+    } else {
+        var returnVal3 = true
+    }
+    return returnVal3
+
+}
+
+
+
+$('#submit_password').on('click', function(e) {
+    e.preventDefault()
+    var validate = validateFields()
+    if (validate) {
+        console.log('OK')
+        if (checkBothIsSame()) {
+            if (minLength8()) {
+
+                ajaxFunction()
+            }
+        }
+    }
+    else {
+        console.log('Some Fields are empty')
+    }
+})
+// $('#id_current_password').on('click', function() {
+//   $(this).css('background', 'transparent')
+// })
+</script>
+{% endblock %}
+
+{% block style %}
+<style>
+    .p1inputf {
+        padding: 5px;
+    }
+
+    label {
+        padding: 5px;
+    }
+
+    input {
+        background: var(--my-bg-color);
+        color: var(--my-text-color);
+        border: 1px solid gray;
+    }
+
+    input[type="submit"] {
+        background: grey;
+        border-radius: 5px;
+        margin-top: 13px;
+
+    }
+
+    input[type="submit"]:hover {
+        background: grey;
+        border-radius: 5px;
+        padding-left: 5px;
+        opacity: 0.8;
+    }
+
+    input[type="password"] {
+        filter: unset !important;
+        background-color: var(--my-bg-color);
+        color: var(--my-text-color);
+        border: 1px solid grey;
+    }
+
+    .passblock {
+        padding: 10px;
+    }
+
+    #myform {
+        padding: 30px;
+    }
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    textarea:-webkit-autofill,
+    textarea:-webkit-autofill:hover,
+    textarea:-webkit-autofill:focus,
+    select:-webkit-autofill,
+    select:-webkit-autofill:hover,
+    select:-webkit-autofill:focus {
+        border: 1px solid green;
+        -webkit-text-fill-color: var(--my-text-color);
+        /* -webkit-box-shadow: 0 0 0px 1000px var(--my-bg-color) inset; */
+        /* transition: background-color 5000s ease-in-out 0s; */
+    }
+</style>
+{% endblock %}

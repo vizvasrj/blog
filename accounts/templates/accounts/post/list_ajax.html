@@ -1,0 +1,93 @@
+{% load posts_tags %}
+{% load thumbnail %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{{user.profiles.all}}
+{% for post in posts %}
+<div class="row bg-mint-lite p-2 " style="box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;">
+  <div class="col-1 left-col-1">
+
+  </div>
+  <div class="col-11 left-col-11">
+
+    <div class="">
+      <div class="">
+        <a class="textnone" href="{{post.get_absolute_url}}">
+          <h3 id="title{{post.id}}" class="" style="font-family: Noto Sans; font-weight: 800;">
+            {{post.title}}
+            
+            
+            </h3>
+        </a>
+        {% if post.status == "draft" %}
+        <div class="statusMM">
+            {{post.status}}
+                <a href="{{post.get_update_url}}">Edit</a>
+        </div>
+        {% endif %}
+    </div>
+    {% if dashboard %}
+        <div class="datetime">{{ post.updated }}</div>
+        <div class="status">
+            {{post.status}}
+        </div>
+        <a class="btn" style="color: red;" href="{{post.get_delete_url}}">Delete</a>
+        <a class="btn" style="color: blue;" href="{{post.get_update_url}}">Edit</a>
+        
+        
+        {% if post.status == "published" %}
+          <a class="btn" style="color: grey;" href="{{post.get_unpublish_post_url}}">Unpublish</a>
+        {% else %}
+          <a class="btn" style="color: green;" href="{{post.get_publish_post_url}}">Publish</a>
+
+        {% endif %}
+          
+    {% else %}
+    
+    <hr class="hr-post-list">
+      <div id="userdata_1" data-id="{{post.author.id}}-{{post.id}}" class="author-up">
+        {% thumbnail post.author.profiles.photo "42x42" crop="100%" as im %}
+        <a id="usernameid" data-action="list" data-id="{{post.author.id}}-{{post.id}}" class="a_author_image" href="{{post.author.get_absolute_url}}">
+          <img class="author__left__side" src="{{ im.url }}" alt="">
+        </a>
+
+        <a class="author_name_from_list vizvasrj" href="{{post.author.get_absolute_url}}">{{ post.author }}</a>
+        <div class="userdrop" id="authorabout{{post.author.id}}-{{post.id}}">
+          <!-- Null -->
+        </div>
+
+      </div>
+      <div class="date_on_list">
+          {{ post.updated }}
+        </div>
+        
+        
+        {% if post.cover %}
+        
+        {% thumbnail post.cover "883x341" crop="100%" as im %}
+        <a  href="{{post.get_absolute_url}}"><img id="cover{{post.id}}" width="200px" class="col-sm-12 post-image" src="{{im.url}}" alt="" /></a>
+
+      {% endif %}
+        
+      <div class="post__list__body" style="font-family: Noto Sans;">
+        {{ post.body|xssprotect|removeimage|customestrip }}
+    </div>
+    <a class="link0" href="{{post.get_absolute_url}}">
+        <div class="read_more">{% trans 'Read more' %} : </div> 
+    </a>
+    {% endif %}
+      
+        
+    </div>
+
+
+
+
+
+  </div>
+</div>
+<!-- <hr style="border: 2px solid grey;"> -->
+<div style="height: 20px;" class="">
+
+</div>
+{% endfor %}

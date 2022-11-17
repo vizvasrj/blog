@@ -1,0 +1,54 @@
+{% extends 'blog_base.html' %}
+{% load posts_tags %}
+
+{% block content %}	
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3"></div>
+        <div class="col-lg-6">
+            
+            {% if dashboard %}
+                <h1 style="padding: 30px; background: grey;">Dashboard</h1>
+            {% endif %}
+                
+            <div class="user" style="background-color: lightblue;">
+                <h3>{{user.username}}</h3>
+            </div>
+            <div id="post-list">
+                
+            {% include "accounts/post/list_ajax.html" %}
+                
+            </div>
+        </div>
+        <div class="col-lg-3"></div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block script %}	
+<script>
+    console.log("jhgjhgjhg");
+var page = 1;
+var empty_page = false;
+var block_request = false;
+
+$(window).scroll(function () {
+    var margin = $(document).height() - $(window).height() - 200;
+    if ($(window).scrollTop() > margin && empty_page == false && block_request == false) {
+        block_request = true;
+        page += 1;
+        $.get('?page=' + page, function (data) {
+            if (data == '') {
+                empty_page = true;
+            } else {
+                block_request = false;
+                $('#post-list').append(data);
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

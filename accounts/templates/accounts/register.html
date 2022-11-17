@@ -1,0 +1,373 @@
+{% extends "blog_base.html" %}
+{# load crispy_forms_tags #}
+{% load i18n %}
+{% block title %}{% trans 'Create an account' %}{% endblock title %}
+{% block style %}
+<style>
+    #done {
+  background: gray !important;
+  color: white !important;
+}
+    
+.myfieldclass2 {
+    width: 100%;
+    border-style: solid;
+    border-radius: 7px;
+    padding: 5px;
+    background: var(--my-bg-color);
+    color: var(--my-text-color);
+    border: 2px solid grey;
+}
+.myfieldclass2:hover {
+    color: inherit;
+    border: 2px solid grey;
+}
+.myfieldclass2:focus {
+    outline: none;
+    border: 2px solid grey;
+} 
+.login_nav {
+    text-decoration: underline;
+    background: #45662350;
+    border: 1px solid #23346650;
+}
+.signup_nav {
+    text-decoration: underline;
+    background: antiquewhite;
+    border: 1px solid #22333350;
+}
+.bbor {
+    border: 5px solid gray;
+    padding: 0px;
+    display: inline;
+}
+.strength {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    padding: 6px;
+}
+.fullname {
+    padding-bottom: 20px;
+}
+.passnotm {
+    font-size: 12px;
+    padding: 5px;
+}
+
+</style>
+
+{% endblock %}
+
+
+{% block head %}
+
+    	
+
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-4">
+    
+            <h1 class=" d-flex justify-content-center">{% trans 'Create an account' %}</h1>
+            <div class="d-flex justify-content-center signupform">
+    
+                <form class="roboto" method="POST">
+                    <div class="fullname  ">
+                        <label class=" labeltext" for="full_name" class="form-label">{{user_form.email.label}}:</label>
+                        <div class="" >
+                            {{user_form.email}}
+                        </div>
+                        <div class="emailerror"></div>
+                    </div>
+                    <div class="fullname">
+                        <label class=" labeltext" for="full_name" class="form-label">{{user_form.username.label}}:</label>
+                        <div class="">
+                            {{user_form.username}}
+                        </div>
+                        <div class="usererror"></div>
+                    </div>
+                    <div class="fullname">
+                        <label class=" labeltext" for="full_name" class="form-label">{{user_form.password1.label}}:</label>
+                        <div class="">
+                            {{user_form.password1}}
+                        </div>
+                    </div>
+                    <div class="passerror"></div>
+                    <div class="fullname">
+                        <label class=" labeltext" for="full_name" class="form-label">{{user_form.password2.label}}:</label>
+                        <div class="d-flex flex-row" id="show_hide_password">
+                            {{user_form.password2}}
+                            <div class="input-group-addon">
+                                <a class="input-group-text zero-border transparent eye" href=""><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1024 1024"><path fill="currentColor" d="M396 512a112 112 0 1 0 224 0a112 112 0 1 0-224 0zm546.2-25.8C847.4 286.5 704.1 186 512 186c-192.2 0-335.4 100.5-430.2 300.3a60.3 60.3 0 0 0 0 51.5C176.6 737.5 319.9 838 512 838c192.2 0 335.4-100.5 430.2-300.3c7.7-16.2 7.7-35 0-51.5zM508 688c-97.2 0-176-78.8-176-176s78.8-176 176-176s176 78.8 176 176s-78.8 176-176 176z"/></svg></a>
+                            </div>
+                        </div>
+                        <div class="strength">
+                            <div class="bbor one"></div>
+                            <div class="bbor two"></div>
+                            <div class="bbor three"></div>
+                            <div class="bbor four"></div>
+                        </div>
+                        <div id="passnotm"></div>
+                    </div>
+                    
+                    {% if captcha == True %}
+                        
+                    <div class="gre" style="display: inline-flex;">
+                        <div data-size="compact" class="g-recaptcha" data-theme="dark" data-callback="gSuccess" data-expired-callback="gExpire" data-sitekey="6Le__RQiAAAAAHMAz7LMyknBuhgi3yoQrNCe9VhP"></div>
+                        <div class="recaptchawarns" style="padding-top: 20%;">
+                            <div class="warnssvg" style="display: none;"><svg style="font-size: 40px;" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fill="currentColor" fill-rule="evenodd" d="M6.285 1.975C7.06.68 8.939.68 9.715 1.975l5.993 9.997c.799 1.333-.161 3.028-1.716 3.028H2.008C.453 15-.507 13.305.292 11.972l5.993-9.997ZM8 5a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3A.75.75 0 0 1 8 5Zm1 6.5a1 1 0 1 1-2 0a1 1 0 0 1 2 0Z" clip-rule="evenodd"/></svg></div>
+                        </div>
+                    </div>
+                    {% endif %}
+                        
+                    
+                    <div id="done"></div>
+                    <div id="message" class="message">
+                    </div>
+                    {% csrf_token %}
+                    <p>
+
+                        <div class="agree">{% trans "Click “SignUp” to agree to Blogs's Terms of Service and acknowledge that Vizvasrj's Privacy Policy applies to you." %}</div>
+                    </p>
+
+                    <p>
+                        <input id="create" class="mybtn" type="submit" value="{% trans 'SignUp' %}">
+                    </p>
+                </form>
+            </div>
+            <div class="already" style="padding: 30px;">
+                <p style="font-size: 13px;">{% trans 'if you have an account login here.' %}</p>
+                <a class="" href="{% url 'login' %}">
+                    <button id="login" value="" class="mybtn" href="{% url 'login' %}">{% trans 'Login Here' %}</button>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-4"></div>
+    </div>
+    
+</div>
+{% endblock %}
+
+
+{% block script %} 
+<script>
+var ret1 = false
+function isEmail(email) {
+  var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+  return regex.test(email);
+}
+
+function ErrorMessage(id, message) {
+    id.text(message)
+    id.css('color', 'red')
+    id.css('font-size', '12px')
+    id.css('padding', '5px')
+}
+var username_value = null
+var redirect = false
+function ajaxCallRegister() {
+    $.post('{% url "register" %}', {
+        csrfmiddlewaretoken: csrftoken,
+        email: $('#id_email').val(),
+        username: $('#id_username').val(),
+        password1: $('#id_password1').val(),
+        password2: $('#id_password2').val(),
+        // {% if captcha == True %}
+        g_recaptcha_response: $('#g-recaptcha-response').val()
+    
+        // {% endif %}
+    
+    }, function (data) { 
+        // {% if captcha == True %}
+        grecaptcha.reset();
+    
+        // {% endif %}
+        // console.log(data)
+        if (data['status'] == 'ok') {
+            console.log(data['message'])
+            if (data['type'] == 'email') {
+                ErrorMessage($('.emailerror'), data['message'])
+            }
+            else if (data['type'] == 'username') {
+                ErrorMessage($('.usererror'), data['message'])
+            }
+            else if (data['type'] == 'success') {
+                redirect = true
+                $('#done').text('')
+                $('#done').text(data['message'])
+                $('#done').css('color', 'green')
+                $('#done').css('background', 'var(--my-bg-color)')
+                $('#done').css('z-index', '10')
+                $('#done').css('position', 'fixed')
+                $('#done').css('padding', '30px')
+                $('#done').css('bottom', '50%')
+                $('#done').css('left', '25%')
+                $('#done').css('right', '25%')
+                $('#done').css('text-align', 'center')
+                $('#done').css('border', '1px solid')
+                username_value = $('#id_username').val()
+            }
+        }
+     })
+}
+
+$('body').on('click', function(e) {
+    if (redirect) {
+        login_url = '{% url "login" %}'
+        param_url = login_url + '?username=' + username_value
+        document.location = param_url
+    }
+})
+
+function emptyChecker() {
+    
+    if ($('#id_username').val().length <= 0) {
+        ErrorMessage($('.usererror'), '{% trans "Please fill username" %}')
+    }
+    
+    if ($('#id_password1').val().length <= 0) {
+        ErrorMessage($('.passerror'), '{% trans "Please fill password" %}')
+    }
+}
+
+
+$('#create').on('click', function (e) { 
+    e.preventDefault()
+    if (gsuccess == true) {
+
+        if (isEmail($('#id_email').val())) {
+            $('.emailerror').text('')
+            $('.usererror').text('')
+            $('.passerror').text('')
+            if (ret1) {
+                if ($('#id_username').val().length >= 1) {
+                    console.log('I will Submit my self');
+                    ajaxCallRegister();
+                } else {
+                    ErrorMessage($('.usererror'), '{% trans "Please fill username" %}')
+                }
+            }
+            else {
+                // emptyChecker()
+                // console.log('Fields Are empty')
+            }
+        }
+        else {
+            ErrorMessage($('.emailerror'), '{% trans "not valid email" %}')
+            emptyChecker()
+            // $('.emailerror').text('{% trans "not valid email" %}')
+            // $('.emailerror').css('color', 'red')
+            // $('.emailerror').css('font-size', '12px')
+            // $('.emailerror').css('padding', '5px')
+        }
+    } 
+    else {
+        console.log('FILL RECAPTCHAr Expire')
+        $('.warnssvg').css('display', 'block')
+    }
+
+})
+
+function strength1() {
+    // var ret1 = false
+    if ($('#id_password1').val().length < 7) {
+        console.log($('#id_password1').val().length)
+        $('.one').css('border-color', 'red')
+        $('.two').css('border-color', 'grey')
+        $('.three').css('border-color', 'grey')
+        $('.four').css('border-color', 'grey')
+        ret1 = false
+    }
+    else if ($('#id_password1').val().length < 9) {
+        $('.one').css('border-color', 'green')
+        $('.two').css('border-color', 'green')
+        $('.three').css('border-color', 'grey')
+        $('.four').css('border-color', 'grey')
+        ret1 = true
+
+    }
+    else if ($('#id_password1').val().length < 12) {
+        console.log('10')
+        $('.one').css('border-color', 'green')
+        $('.two').css('border-color', 'green')
+        $('.three').css('border-color', 'green')
+        $('.four').css('border-color', 'grey')
+        ret1 = true
+    }
+    else if ($('#id_password1').val().length < 14) {
+        console.log('13')
+        $('.one').css('border-color', 'green')
+        $('.two').css('border-color', 'green')
+        $('.three').css('border-color', 'green')
+        $('.four').css('border-color', 'green')
+        ret1 = true
+    }
+    return ret1
+}
+
+$('#id_password1').on('keyup', function(e) {
+    $this = $(this)
+    var pass = $this.val()
+    var st1 = strength1()
+    console.log(st1)
+    if ( st1 ) {
+        console.log('OK')
+    }
+
+})
+
+$('#id_password2').on('keyup', function(e) {
+    $this = $(this)
+    var pass2 = $this.val()
+    if ($('#id_password1').val() != pass2) {
+        $('#passnotm').text('{% trans "Password Does Not Matched" %}')
+    }
+    else {
+        $('#passnotm').text('')
+
+    }
+})
+
+
+$("#show_hide_password a").on('click', function(event) {
+    event.preventDefault();
+    if($('#show_hide_password input').attr("type") == "text"){
+        $('#show_hide_password input').attr('type', 'password');
+        $('#show_hide_password i').addClass( "bi bi-eye-fill" );
+        $('#show_hide_password i').removeClass( "bi bi-eye-slash-fill" );
+    }else if($('#show_hide_password input').attr("type") == "password"){
+        $('#show_hide_password input').attr('type', 'text');
+        $('#show_hide_password i').removeClass( "bi bi-eye-fill" );
+        $('#show_hide_password i').addClass( "bi bi-eye-slash-fill" );
+    }
+})
+// {% if captcha == True %}
+
+
+var gsuccess = false
+
+function gExpire() {
+    console.log('EXPIRED')
+    gsuccess = false
+    $('.warnssvg').css('display', 'block')
+
+}
+function gSuccess() {
+    console.log('Success')
+    gsuccess = true
+    $('.warnssvg').css('display', 'none')
+}
+// {% else %}
+var gsuccess = true
+
+// {% endif %}
+
+
+    
+</script>
+
+{% endblock %}
+

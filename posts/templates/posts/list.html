@@ -1,0 +1,403 @@
+{% extends "blog_base.html" %}
+{% load posts_tags %}
+{% load i18n %}
+{% load thumbnail %}
+{% block title %} blog {% endblock title %}
+
+{% block metadata %}
+<meta name="description" content="{% trans 'blog.com is collection news, article, blog in Your native language, You can also be part of this big family' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- <div class="row">
+        <div class="col-lg-6"></div>
+
+        <div class="col-lg-3">
+            <div class="headTop10">
+                {% trans 'Top 10 of Today' %}
+            </div>
+            <div class="top_posts">
+                <div class="ullist">
+                {% for post in topposts %}
+                    <li class="toptitle">
+                        
+                        {% if post.cover2.image %}
+                            {% thumbnail post.cover2.image "100x100" crop="100%" as im %}
+                            <div class="img">
+                                <img src="{{im.url}}" alt="">
+
+                            </div>
+
+                        {% endif %}
+
+                        {% if post.cover %}
+                        {% thumbnail post.cover "100x100" crop="100%" as im %}
+                        <div class="img">
+                            <img src="{{im.url}}" alt="">
+
+                        </div>
+
+                        {% endif %}
+                            <div class="toptext">
+
+                                <a class="textnone" href="{{post.get_absolute_url}}">{{post}}</a>
+                            </div>
+                    </li>
+                {% endfor %}
+                </div>  
+            </div>
+        </div>
+
+        <div class="col-lg-3"></div>
+    </div> -->
+    <div class="row">
+
+        <div class="col-lg-1"></div>
+        <div class="col-lg-7">
+            <div id="post-list">
+                {% include "posts/list_ajax.html" %}
+            </div>
+        </div>
+        <div class="col-lg-3">
+
+
+        </div>
+        <div class="col-lg-1"></div>
+    </div>
+    <div id="post_list_login_id">
+        <div class="warrning_close"><svg xmlns="http://www.w3.org/2000/svg" width="0.93em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1216 1312"><path fill="currentColor" d="M1202 1066q0 40-28 68l-136 136q-28 28-68 28t-68-28L608 976l-294 294q-28 28-68 28t-68-28L42 1134q-28-28-28-68t28-68l294-294L42 410q-28-28-28-68t28-68l136-136q28-28 68-28t68 28l294 294l294-294q28-28 68-28t68 28l136 136q28 28 28 68t-28 68L880 704l294 294q28 28 28 68z"/></svg></div>
+        <div id="warrning_img"></div>
+        <div id="warrning_title"></div>
+        <div class="post_list_warrnig">
+            <div class="text_warning">{% trans 'In Order to Bookmark you need to login.' %}</div>
+            <div class="butt">
+                <a style="text-decoration: none;" href="{% url 'login' %}" class="p-1 mybtn">{% trans 'Click here to login' %}</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block footer %} 
+
+{% endblock %}
+
+{% block domready %}
+
+{% endblock %}
+
+
+{% block mymyscript %}	
+<script>
+// OLD ONE
+
+var page = 1;
+var empty_page = false;
+var block_request = false;
+
+$(window).scroll(function () {
+    var margin = $(document).height() - $(window).height() - 200;
+    if ($(window).scrollTop() > margin && empty_page == false && block_request == false) {
+        block_request = true;
+        page += 1;
+        $.get('?page=' + page, function (data) {
+            if (data == '') {
+                empty_page = true;
+            } else {
+                block_request = false;
+                $('#post-list').append(data);
+            }
+        });
+    }
+});
+$('#post-list').on("click", "a.bookmark", function(event){
+    // {% if request.user.is_authenticated %}
+      event.preventDefault();
+    // {% else %}
+      console.log("Login First");
+    // {% endif %}
+
+    console.log( $(this).data('id') );
+    var a = $(this).data('id');
+    console.log(csrftoken);
+    $.post('{% url "bookmark" %}',{
+      id: $(this).data('id'),
+      action: $(this).data('action'),
+      csrfmiddlewaretoken: csrftoken,
+
+  }, function(data){
+        if (data['status'] == 'ok') {
+          
+          var previous_action = $('a.bookmark').data('action');
+
+          //toggle data-action
+        //   $('a.bookmark').data('action', previous_action == 'bookmark' ? 'unbookmark' : 'bookmark');
+        //   $('a#'+a).toggleClass(previous_action == 'bookmark' || previous_action == 'unbookmark' ? 'un' : '');
+          $('a#'+a).attr('data-action', $('a#'+a).attr('data-action') == 'bookmark' ? 'unbookmark' : 'bookmark')
+
+          //toggle link text
+          $('a.bookmark svg path.'+a).toggleClass(previous_action == 'bookmark' || previous_action == 'unbookmark' ? 'king' : '');
+
+      }
+      else{
+          console.log("Error")
+      }
+  });
+});
+
+
+
+
+
+
+// HERE IS NEW ONE
+var counter = 0;
+const data = []
+var arraydata = []
+
+
+if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+  // true for mobile device
+  $("#post-list").on('tap', 'a#usernameid', function (e,data){
+        e.preventDefault();
+        var a = $(this).data('id');
+        $(".userdrop").css('visibility', 'hidden');
+        $('#authorabout' + a).css('visibility', 'visible');
+        if ( !arraydata.includes(a) ){
+            arraydata.push(a)
+            // alert(arraydata.join())
+            $.post('{% url "ajax_user" %}', {
+                id: a,
+                action: $(this).data('action'),
+                csrfmiddlewaretoken: csrftoken,
+            },
+                function (data) {
+                    //   console.log(data)
+                    if (data['status'] == 'ok') {
+                        //   console.log( $('#authorabout'+a).attr('action') )
+    
+                        $('#authorabout' + a).append("<img src='"+data['url']+"' />");
+                        $('#authorabout' + a).append("<p>"+data['lang']+"</p>");
+                        $('#authorabout' + a).append("<p class='userdropabout'>"+data['about']+"</p>");
+    
+                        //   var previous_action = $('a.bookmark').data('action');
+    
+                        //toggle data-action
+                        //   $('a.bookmark').data('action', previous_action == 'bookmark' ? 'unbookmark' : 'bookmark');
+    
+                        //toggle link text
+                        //   $('a.bookmark svg path.'+a).toggleClass(previous_action == 'bookmark' || previous_action == 'unbookmark' ? 'king' : '');
+    
+                    }
+                    else {
+                        console.log("Error")
+                    }
+                });
+        }
+
+    });
+    $("body").on('tap', function (e,data){
+        textt = e.target.parentNode.id;
+        if (textt.startsWith('author') || (textt.startsWith('username')) || (textt.startsWith('authorabout')) ) {
+            // console.log('True')
+        } else {
+            $(".userdrop").css('visibility', 'hidden');
+        }
+
+    })
+
+
+} else {
+  // false for not mobile device
+    $('#post-list').on("mouseenter", "a#usernameid", function (event) {
+        event.preventDefault();
+        var a = $(this).data('id');
+        $('#authorabout' + a).css('visibility', 'visible');
+
+        if ( !data.includes(a) ) {
+            // console.log(data)
+            // counter ++;
+            // console.log(a+' aaaaa')
+            data.push(a)
+            // console.log(counter+' counter')
+            // console.log( $(this).data('id') );
+            $.post('{% url "ajax_user" %}', {
+                id: a,
+                action: $(this).data('action'),
+                csrfmiddlewaretoken: csrftoken,
+            },
+                function (data) {
+                    //   console.log(data)
+                    if (data['status'] == 'ok') {
+                        //   console.log( $('#authorabout'+a).attr('action') )
+
+                        $('#authorabout' + a).append("<img src='"+data['url']+"' />");
+                        $('#authorabout' + a).append("<p>"+data['lang']+"</p>");
+                        $('#authorabout' + a).append("<p class='userdropabout'>"+data['about']+"</p>");
+
+                        //   var previous_action = $('a.bookmark').data('action');
+
+                        //toggle data-action
+                        //   $('a.bookmark').data('action', previous_action == 'bookmark' ? 'unbookmark' : 'bookmark');
+
+                        //toggle link text
+                        //   $('a.bookmark svg path.'+a).toggleClass(previous_action == 'bookmark' || previous_action == 'unbookmark' ? 'king' : '');
+
+                    }
+                    else {
+                        console.log("Error")
+                    }
+                });
+        }
+    }).on('mouseleave', 'div.userdrop', function(event){
+        $(".userdrop").css('visibility', 'hidden');
+    }).on('mouseleave', 'a#usernameid', 'div.userdrop', function(event){
+        $('.userdrop').css('visibility', 'hidden');
+    }).on('mouseenter', '.userdrop', function(event){
+        $(this).css('visibility', 'visible');
+    });
+
+    }
+
+// $('#post-list').on("mouseout", function (event) {
+//     $('.userdrop').css('visibility', 'hidden');
+// })
+// $("#actionMenu").mouseenter(function() {
+//     $(this).show();
+// }).mouseleave(function() {
+//     $(this).hide();
+// });
+// $("a#usernameid, .userdrop").mouseleave(function(){
+//     $(".userdrop").css('visibility', 'hidden');
+//     console.log('HIDE');
+//   });
+// !#! Test For Production.
+
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// {% if not request.user.is_authenticated %}
+
+if (Cookies.get('timezone')) {
+    $('.cale-date').attr('title', Cookies.get('timezone'))
+}
+// {% endif %}
+
+
+$('#post-list').on('click', 'a.bookmark_unauthenticated', function(e) {
+    e.preventDefault()
+    $('#warrning_img').empty()
+    $('#warrning_title').text('')
+
+    post_id = e.currentTarget.getAttribute('data-post')
+    $('#post_list_login_id').css('display', 'block')
+    src = $('#cover'+post_id).attr('src')
+    if (src !== undefined) {
+        
+        $('#warrning_img').append('<img src="'+src+'"></img>')
+    }
+    title = $('#title'+post_id).text().trim()
+    $('#warrning_title').text(title)
+
+})
+
+$('.warrning_close').on('click', function(e){
+    $('#post_list_login_id').css('display', 'none')
+})
+
+
+
+</script>
+{% endblock %}
+
+
+{% block style2 %}	
+<style>
+    #post_list_login_id {
+        display: none;
+        position: fixed;
+        top: 10%;
+        left: 10%;
+        right: 10%;
+        bottom: 10%;
+        background: var(--my-bg-color);
+        text-align: center;
+        border-radius: 20px;
+        box-shadow: var(--my-text-color) 0px 13px 27px -5px, var(--my-text-color) 0px 8px 16px -8px;
+    }
+    .post_list_warrnig {
+        justify-content: center;
+        padding-left: 13%;
+        padding-right: 13%;
+        padding-top: 5%;
+    }
+    .warrning_close {
+        cursor: pointer;
+        padding: 10px;
+        /* {% if LANGUAGE_CODE == 'ar' or LANGUAGE_CODE == 'ur'  %} */
+        text-align: left;
+        /* {% else %} */
+        text-align: right;
+        /* {% endif %} */
+        
+    }
+    .butt {
+        display: flex;
+        justify-content: center;
+    }
+    #warrning_img > img {
+        max-width: 600px;
+        width: 100%;
+    }
+    #warrning_title {
+        font-size: 20px;
+        font-weight: 900;
+    }
+    .headTop10 {
+        text-decoration: underline;
+        font-size: 30px;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+    .toptitle {
+        display: inline-flex;
+        border: 1px solid grey;
+        padding: 5px;
+        border-radius: 20px;
+        margin-bottom: 10px;
+    }
+    .img > img {
+        border-radius: 20px;
+    }
+    .toptext {
+        padding-left: 5px;
+        padding-right: 5px;
+        font-size: 15px;
+    }
+</style>
+{% endblock %}
+
+{% block script %}	
+<script>
+    var page = 1;
+var empty_page = false;
+var block_request = false;
+
+$(window).scroll(function () {
+    var margin = $(document).height() - $(window).height() - 200;
+    if ($(window).scrollTop() > margin && empty_page == false && block_request == false) {
+        block_request = true;
+        page += 1;
+        $.get('?page=' + page, function (data) {
+            if (data == '') {
+                empty_page = true;
+            } else {
+                block_request = false;
+                $('#post-list').append(data);
+            }
+        });
+    }
+});
+
+</script>
+{% endblock %}
