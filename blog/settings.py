@@ -15,6 +15,10 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+import environ
+
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -95,7 +99,7 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 # }
 
 import dj_database_url
-DATABASES = {'default': dj_database_url.config(default=os.environ['DATABASE_URL'], engine='django_cockroachdb')}
+DATABASES = {'default': dj_database_url.config(default=env('DATABASE_URL'), engine='django_cockroachdb')}
 # DATABASES = {
 #     'default': {
 #         'ENGINE': env("DB_ENGINE"),
