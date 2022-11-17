@@ -7,7 +7,10 @@ certifi
 charset-normalizer
 da-vinci
 decorator
+dj-database-url
 Django
+django-cockroachdb
+django-environ
 django-extensions
 django-restframework
 djangorestframework
@@ -25,6 +28,7 @@ pexpect
 pickleshare
 Pillow
 prompt-toolkit
+psycopg2
 ptyprocess
 pure-eval
 Pygments
