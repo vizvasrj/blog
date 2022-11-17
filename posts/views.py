@@ -61,7 +61,6 @@ def create_post(request):
             title = request.POST.get('title')
             body = request.POST.get('body')
             status = request.POST.get('status')
-            status = request.POST.get('myCountry')
             print(colored(request.POST, 'red'))
             print(colored(cover, 'blue'))
         except:
